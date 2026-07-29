@@ -43,6 +43,7 @@ def clean_X(df):
         if c.endswith('n_rest_runs_used')
         or c.endswith('n_timepoints')
         or c.endswith('n_parcels')
+        or c.endswith('graph_density')
     ]
     X = X.drop(columns=technical, errors='ignore')
 

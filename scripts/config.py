@@ -15,8 +15,10 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 load_dotenv(PROJECT_ROOT / '.env')
 
 
-# Dataset location comes from each teammate's local .env file.
-DATA_DIR = Path(os.environ['TCP_DATA_DIR'])
+# Dataset location comes from each teammate's local .env file. Scripts that
+# only inspect generated outputs can still run without a .env; raw-data scripts
+# will then look for the generic project-local data/ directory.
+DATA_DIR = Path(os.getenv('TCP_DATA_DIR', PROJECT_ROOT / 'data')).expanduser().resolve()
 
 PHENOTYPE_DIR = DATA_DIR / 'phenotype'
 FMRI_DIR = DATA_DIR / 'fMRI_timeseries_clean_denoised_GSR_parcellated'
@@ -43,12 +45,21 @@ SUBJECT_ID_COLUMN = 'subjectkey'
 
 # The dataset consistently uses 999/9999 for unavailable values. Do not
 # globally replace 99 because 99 can be a valid score in some instruments.
-MISSING_CODES = [999, 9999, '999', '9999', '', 'NA', 'N/A']
+MISSING_CODES = [
+    999, 9999, -999, -9999,
+    '999', '9999', '-999', '-9999',
+    '', 'NA', 'N/A',
+]
+
+# Ambiguous repeated-nine values are audited rather than automatically erased.
+# Some instruments can legitimately contain scores of 99.
+AMBIGUOUS_REPEATED_NINES = [99, -99, '99', '-99']
 
 
 # Imaging feature engineering settings.
 # Regional parcel-strength variables are extracted for every parcel, then
 # reduced inside each training/CV fold to avoid feature-selection leakage.
+EXPECTED_N_PARCELS = 488
 GRAPH_DENSITY = 0.10
 IMAGING_REGIONAL_SELECT_K = 30
 IMAGING_REGIONAL_PCA_COMPONENTS = 15

@@ -35,6 +35,7 @@ from config import (
     OUTPUT_DIR,
     REST_FILE_PATTERNS,
     GRAPH_DENSITY,
+    EXPECTED_N_PARCELS,
 )
 
 
@@ -51,12 +52,21 @@ def load_timeseries(h5_path: Path) -> np.ndarray:
     if ts.ndim != 2:
         raise ValueError(f"Expected a 2D array, received shape={ts.shape}")
 
-    # TCP files have been observed as timepoints × parcels, e.g. 434 × 488.
-    if ts.shape[0] < ts.shape[1] / 2:
+    # TCP uses 488 atlas parcels. Identify the parcel axis explicitly so a
+    # 488 × timepoints matrix is never mistaken for timepoints × parcels.
+    if ts.shape[1] == EXPECTED_N_PARCELS:
+        pass
+    elif ts.shape[0] == EXPECTED_N_PARCELS:
         warnings.warn(
-            f"Unusual orientation {ts.shape} in {h5_path.name}; transposing."
+            f"Detected parcels × timepoints orientation {ts.shape} in "
+            f"{h5_path.name}; transposing."
         )
         ts = ts.T
+    else:
+        raise ValueError(
+            f"Cannot identify parcel axis from shape {ts.shape}; expected "
+            f"one axis to contain {EXPECTED_N_PARCELS} parcels."
+        )
 
     # Replace isolated invalid samples with the parcel median instead of zero,
     # which would create artificial correlations.

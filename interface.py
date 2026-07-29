@@ -531,11 +531,12 @@ st.markdown(
 # Main tabs
 # =====================================================
 
-dashboard_tab, best_tab, comparison_tab, findings_tab = st.tabs(
+dashboard_tab, best_tab, comparison_tab, visualizations_tab, findings_tab = st.tabs(
     [
         "Dashboard",
         "Best Models",
         "Interactive Comparison",
+        "Key Visualizations",
         "Findings & Outcomes",
     ]
 )
@@ -1043,9 +1044,472 @@ with comparison_tab:
                 hide_index=True,
             )
 
+# =====================================================
+# Tab 4: Key visualizations
+# =====================================================
+
+with visualizations_tab:
+    st.header("Key Results Visualizations")
+
+    st.markdown(
+        """
+        These visualizations summarize the project's main findings across
+        behavioral, imaging-only, and multimodal prediction models.
+        """
+    )
+
+    if metrics.empty:
+        st.warning(
+            "Model results are unavailable. Run the training and evaluation "
+            "scripts before viewing the visualizations."
+        )
+
+    else:
+        # -------------------------------------------------
+        # Visualization 1: Best performance by target
+        # -------------------------------------------------
+        st.subheader("Best Model Performance by Target")
+
+        st.markdown(
+            """
+            This chart shows the held-out test R² for the best-performing
+            model for each symptom target. Higher values indicate that the
+            model explains more variation in symptom severity.
+            """
+        )
+
+        if (
+            not best_models.empty
+            and "test_r2" in best_models.columns
+        ):
+            best_chart = (
+                best_models[
+                    ["target_label", "test_r2"]
+                ]
+                .dropna()
+                .sort_values("test_r2")
+                .set_index("target_label")
+            )
+
+            st.bar_chart(
+                best_chart,
+                horizontal=True,
+                x_label="Held-out test R²",
+                y_label="Symptom target",
+                use_container_width=True,
+            )
+
+            st.caption(
+                """
+                Anxiety had the strongest predictive performance, while
+                anhedonia was the most difficult outcome to predict.
+                """
+            )
+
+        else:
+            st.info(
+                "Best-model test R² results are unavailable."
+            )
+
+        st.divider()
+
+        # -------------------------------------------------
+        # Visualization 2: Modalities across targets
+        # -------------------------------------------------
+        st.subheader("Behavioral, Imaging, and Multimodal Performance")
+
+        st.markdown(
+            """
+            Select a performance metric to compare the three major sources
+            of predictor data across all four symptom targets.
+            """
+        )
+
+        modality_metric_options = {}
+
+        if "cv_r2_mean" in metrics.columns:
+            modality_metric_options[
+                "Mean cross-validation R²"
+            ] = "cv_r2_mean"
+
+        if "test_r2" in metrics.columns:
+            modality_metric_options[
+                "Held-out test R²"
+            ] = "test_r2"
+
+        if "test_mae" in metrics.columns:
+            modality_metric_options[
+                "Held-out test MAE"
+            ] = "test_mae"
+
+        selected_modality_metric_label = st.selectbox(
+            "Performance metric",
+            options=list(modality_metric_options.keys()),
+            key="visualization_modality_metric",
+        )
+
+        selected_modality_metric = modality_metric_options[
+            selected_modality_metric_label
+        ]
+
+        modality_data = metrics.copy()
+
+        def get_modality_label(row):
+            model_key = str(row.get("model_key", ""))
+
+            if model_key == "imaging_only":
+                return "Imaging Only"
+
+            if model_key.startswith("behavioral_"):
+                return "Behavioral"
+
+            if model_key.startswith("multimodal_"):
+                return "Multimodal"
+
+            return "Other"
+
+        modality_data["modality_group"] = modality_data.apply(
+            get_modality_label,
+            axis=1,
+        )
+
+        modality_data = modality_data[
+            modality_data["modality_group"].isin(
+                ["Behavioral", "Imaging Only", "Multimodal"]
+            )
+        ]
+
+        # Keep the strongest model within each broad modality for each target.
+        if selected_modality_metric in {
+            "test_mae",
+            "test_rmse",
+            "cv_mae_mean",
+            "cv_rmse_mean",
+        }:
+            modality_summary = (
+                modality_data.groupby(
+                    ["target_label", "modality_group"],
+                    as_index=False,
+                )[selected_modality_metric]
+                .min()
+            )
+        else:
+            modality_summary = (
+                modality_data.groupby(
+                    ["target_label", "modality_group"],
+                    as_index=False,
+                )[selected_modality_metric]
+                .max()
+            )
+
+        modality_pivot = modality_summary.pivot(
+            index="target_label",
+            columns="modality_group",
+            values=selected_modality_metric,
+        )
+
+        preferred_order = [
+            "Behavioral",
+            "Imaging Only",
+            "Multimodal",
+        ]
+
+        modality_pivot = modality_pivot[
+            [
+                column
+                for column in preferred_order
+                if column in modality_pivot.columns
+            ]
+        ]
+
+        st.bar_chart(
+            modality_pivot,
+            x_label="Symptom target",
+            y_label=selected_modality_metric_label,
+            use_container_width=True,
+        )
+
+        if selected_modality_metric in {
+            "test_mae",
+            "test_rmse",
+        }:
+            st.caption(
+                """
+                Lower values indicate better performance. Behavioral models
+                generally produced the lowest prediction errors.
+                """
+            )
+        else:
+            st.caption(
+                """
+                Higher values indicate better performance. Behavioral
+                models consistently outperformed imaging-only models, and
+                adding imaging generally provided little benefit.
+                """
+            )
+
+        st.divider()
+
+        # -------------------------------------------------
+        # Visualization 3: CV versus test performance
+        # -------------------------------------------------
+        st.subheader("Cross-Validation vs. Held-Out Test Performance")
+
+        st.markdown(
+            """
+            Comparing cross-validation and held-out test scores helps identify
+            models whose apparent performance may depend heavily on a single
+            train/test split.
+            """
+        )
+
+        selected_cv_target = st.selectbox(
+            "Choose a symptom target",
+            options=sorted(
+                metrics["target_key"].dropna().unique()
+            ),
+            format_func=lambda value: TARGET_LABELS.get(
+                value,
+                value,
+            ),
+            key="visualization_cv_target",
+        )
+
+        cv_test_data = metrics[
+            metrics["target_key"] == selected_cv_target
+        ].copy()
+
+        required_cv_columns = {
+            "model_label",
+            "cv_r2_mean",
+            "test_r2",
+        }
+
+        if required_cv_columns.issubset(cv_test_data.columns):
+            cv_test_chart = (
+                cv_test_data[
+                    [
+                        "model_label",
+                        "cv_r2_mean",
+                        "test_r2",
+                    ]
+                ]
+                .dropna()
+                .drop_duplicates(subset=["model_label"])
+                .rename(
+                    columns={
+                        "cv_r2_mean": "Mean CV R²",
+                        "test_r2": "Test R²",
+                    }
+                )
+                .set_index("model_label")
+            )
+
+            st.bar_chart(
+                cv_test_chart,
+                horizontal=True,
+                x_label="R²",
+                y_label="Model",
+                use_container_width=True,
+            )
+
+            st.caption(
+                """
+                Large gaps between cross-validation and test R² can indicate
+                that the held-out result is unstable or unusually favorable.
+                Model selection should therefore prioritize repeated
+                cross-validation performance.
+                """
+            )
+
+        else:
+            st.info(
+                "Both cross-validation and test R² values are required "
+                "for this chart."
+            )
+
+        st.divider()
+
+        # -------------------------------------------------
+        # Visualization 4: Behavioral feature scopes
+        # -------------------------------------------------
+        st.subheader("Behavioral Feature-Set Comparison")
+
+        st.markdown(
+            """
+            This chart compares the full behavioral dataset with the smaller
+            relevant and same-category behavioral feature sets.
+            """
+        )
+
+        selected_behavior_target = st.selectbox(
+            "Choose a target for behavioral comparison",
+            options=sorted(
+                metrics["target_key"].dropna().unique()
+            ),
+            format_func=lambda value: TARGET_LABELS.get(
+                value,
+                value,
+            ),
+            key="visualization_behavior_target",
+        )
+
+        behavioral_rows = metrics[
+            (
+                metrics["target_key"]
+                == selected_behavior_target
+            )
+            & (
+                metrics["model_key"].str.startswith(
+                    "behavioral_",
+                    na=False,
+                )
+            )
+        ].copy()
+
+        behavioral_metric_options = {}
+
+        if "cv_r2_mean" in behavioral_rows.columns:
+            behavioral_metric_options[
+                "Mean cross-validation R²"
+            ] = "cv_r2_mean"
+
+        if "test_r2" in behavioral_rows.columns:
+            behavioral_metric_options[
+                "Held-out test R²"
+            ] = "test_r2"
+
+        selected_behavior_metric_label = st.selectbox(
+            "Behavioral comparison metric",
+            options=list(behavioral_metric_options.keys()),
+            key="visualization_behavior_metric",
+        )
+
+        selected_behavior_metric = behavioral_metric_options[
+            selected_behavior_metric_label
+        ]
+
+        behavioral_chart = (
+            behavioral_rows[
+                ["model_label", selected_behavior_metric]
+            ]
+            .dropna()
+            .drop_duplicates(subset=["model_label"])
+            .sort_values(selected_behavior_metric)
+            .set_index("model_label")
+        )
+
+        st.bar_chart(
+            behavioral_chart,
+            horizontal=True,
+            x_label=selected_behavior_metric_label,
+            y_label="Behavioral feature set",
+            use_container_width=True,
+        )
+
+        st.caption(
+            """
+            Smaller relevant or category-specific feature sets sometimes
+            performed similarly to the full behavioral dataset, showing that
+            additional features do not automatically improve prediction.
+            """
+        )
+
+        st.divider()
+
+        # -------------------------------------------------
+        # Visualization 5: Main interpretation
+        # -------------------------------------------------
+        st.subheader("What the Results Show")
+
+        finding_col1, finding_col2, finding_col3 = st.columns(3)
+
+        with finding_col1:
+            st.success(
+                """
+                **Behavioral signal was strongest**
+
+                Self-report questionnaire features provided the most useful
+                information for predicting symptom severity.
+                """
+            )
+
+        with finding_col2:
+            st.info(
+                """
+                **Imaging signal was limited**
+
+                The extracted resting-state fMRI features did not produce
+                strong symptom predictions on their own.
+                """
+            )
+
+        with finding_col3:
+            st.warning(
+                """
+                **More data was not always better**
+
+                Multimodal and full-feature models often failed to outperform
+                smaller behavioral models.
+                """
+            )
+
+# -----------------------------------------------------
+# Target and Model Guide
+# -----------------------------------------------------
+st.subheader("Understanding the Targets and Models")
+
+with st.expander("What do the targets and model types mean?"):
+    st.markdown("""
+    ### Prediction Targets
+
+    - **QIDS — Depression:**  
+      Predicts depression symptom severity using the Quick Inventory of
+      Depressive Symptomatology score.
+
+    - **STAI-State — Anxiety:**  
+      Predicts current anxiety severity using the State-Trait Anxiety
+      Inventory state score.
+
+    - **PSS — Perceived Stress:**  
+      Predicts how much stress a participant reports experiencing.
+
+    - **SHAPS — Anhedonia:**  
+      Predicts reduced ability to experience pleasure or enjoyment.
+
+    ### Model Types
+
+    - **All Behavioral:**  
+      Uses the full set of eligible behavioral questionnaire features,
+      excluding the target questionnaire itself.
+
+    - **Relevant Behavioral:**  
+      Uses behavioral questionnaires from symptom domains considered
+      clinically relevant to the selected target.
+
+    - **Categorical Behavioral:**  
+      Uses only questionnaires assigned to the same symptom category as
+      the prediction target. For example, a depression-category model uses
+      depression-related questionnaires to predict QIDS.
+
+    - **Imaging Only:**  
+      Uses features extracted from resting-state fMRI data, including
+      connectivity summaries, graph features, regional parcel-strength
+      features, and PCA components.
+
+    - **Multimodal All:**  
+      Combines imaging features with the full behavioral feature set.
+
+    - **Multimodal Relevant:**  
+      Combines imaging features with the relevant behavioral feature set.
+
+    - **Multimodal Category:**  
+      Combines imaging features with behavioral features from the target's
+      symptom category.
+    """)
 
 # =====================================================
-# Tab 4: Findings and outcomes
+# Tab 5: Findings and outcomes
 # =====================================================
 
 with findings_tab:

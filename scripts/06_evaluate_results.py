@@ -37,11 +37,11 @@ def save_importance(experiment_name):
 def main():
     metrics = pd.read_csv(RESULTS_DIR / 'model_metrics_comparison.csv')
     metrics = metrics[metrics['status'] == 'ok'].copy()
-    metrics = metrics.sort_values(['target_key', 'test_R2'], ascending=[True, False])
+    metrics = metrics.sort_values(['target_key', 'cv_R2_mean'], ascending=[True, False])
     metrics.to_csv(RESULTS_DIR / 'model_metrics_comparison_sorted.csv', index=False)
 
     best = (
-    metrics.sort_values(['target_key', 'test_R2'], ascending=[True, False])
+    metrics.sort_values(['target_key', 'cv_R2_mean'], ascending=[True, False])
     .groupby('target_key', as_index=False)
     .head(1)
     .reset_index(drop=True)
@@ -58,7 +58,8 @@ def main():
     modality.to_csv(RESULTS_DIR / 'modality_scope_summary.csv', index=False)
 
     print('\nBest model for each target:')
-    print(best[['target_key', 'experiment_name', 'test_R2', 'test_MAE', 'cv_R2_mean', 'cv_R2_std']].to_string(index=False))
+    print('Models are selected by repeated cross-validation R²; test metrics remain held out.')
+    print(best[['target_key', 'experiment_name', 'cv_R2_mean', 'cv_R2_std', 'test_R2', 'test_MAE']].to_string(index=False))
 
     for target, group in metrics.groupby('target_key'):
         plot = group.copy()
@@ -66,13 +67,13 @@ def main():
             lambda r: 'imaging only' if r['input_type'] == 'imaging_only'
             else f"{r['input_type'].replace('_', ' ')}\n{r['behavior_scope']}", axis=1)
         plt.figure(figsize=(11, 6))
-        plt.bar(plot['label'], plot['test_R2'])
+        plt.bar(plot['label'], plot['cv_R2_mean'])
         plt.axhline(0, linewidth=1)
-        plt.ylabel('Test R²')
+        plt.ylabel('Mean repeated-CV R²')
         plt.title(f'{target.upper()} modality and scope comparison')
         plt.xticks(rotation=40, ha='right')
         plt.tight_layout()
-        plt.savefig(RESULTS_DIR / f'{target}_modality_scope_test_R2.png', dpi=200)
+        plt.savefig(RESULTS_DIR / f'{target}_modality_scope_cv_R2.png', dpi=200)
         plt.close()
 
     for experiment_name in best['experiment_name']:
