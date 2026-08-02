@@ -32,3 +32,6 @@ checkpoints/
 *.nii
 *.nii.gz
 *.h5
+
+# PyCharm
+.idea/

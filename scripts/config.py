@@ -17,7 +17,7 @@ load_dotenv(PROJECT_ROOT / '.env')
 # Dataset location comes from each teammate's local .env file. Scripts that
 # only inspect generated outputs can still run without a .env; raw-data scripts
 # will then look for the generic project-local data/ directory.
-DATA_DIR = Path(os.getenv('TCP_DATA_DIR', PROJECT_ROOT / 'Dataset/ds005237')).expanduser().resolve()
+DATA_DIR = Path(os.getenv('TCP_DATA_DIR', PROJECT_ROOT / 'data')).expanduser().resolve()
 
 PHENOTYPE_DIR = DATA_DIR / 'phenotype'
 FMRI_DIR = DATA_DIR / 'fMRI_timeseries_clean_denoised_GSR_parcellated'
