@@ -60,9 +60,11 @@ MODEL_LABELS = {
     "behavioral_all": "All Behavioral",
     "behavioral_relevant": "Relevant Behavioral",
     "behavioral_category": "Categorical Behavioral",
+    "behavioral_non_symptom": "Non-symptom Behavioral",
     "multimodal_all": "All Behavioral + Imaging",
     "multimodal_relevant": "Relevant Behavioral + Imaging",
     "multimodal_category": "Categorical Behavioral + Imaging",
+    "multimodal_non_symptom": "Non-symptom Behavioral + Imaging"
 }
 
 
@@ -497,7 +499,7 @@ with st.sidebar:
         - **QIDS:** Depression
         - **STAI-State:** Anxiety
         - **SHAPS:** Anhedonia
-        - **PSS:** Perceived stress
+        - **PSS:** Perceived Stress
         """
     )
 
@@ -601,7 +603,7 @@ with dashboard_tab:
     with finding_col1:
         st.success(
             """
-            **Behavioral data performed best**
+            **Behavioral-only models performed best**
 
             Questionnaire features consistently produced the strongest
             symptom-severity predictions.
@@ -609,7 +611,7 @@ with dashboard_tab:
         )
 
     with finding_col2:
-        st.info(
+        st.warning(
             """
             **Imaging performance was limited**
 
@@ -619,12 +621,12 @@ with dashboard_tab:
         )
 
     with finding_col3:
-        st.warning(
+        st.info(
             """
-            **Multimodal data added little**
+            **Removing symptom-scale features indicated predictive performance**
 
-            Adding imaging features generally did not improve upon the
-            strongest behavioral models.
+            Non-symptom behavioral characteristics provide valuable information for 
+            predicting mental health outcomes.
             """
         )
 
@@ -1422,7 +1424,7 @@ with visualizations_tab:
         # -------------------------------------------------
         st.subheader("What the Results Show")
 
-        finding_col1, finding_col2, finding_col3 = st.columns(3)
+        finding_col1, finding_col2, finding_col3, finding_col4 = st.columns(4)
 
         with finding_col1:
             st.success(
@@ -1451,6 +1453,16 @@ with visualizations_tab:
 
                 Multimodal and full-feature models often failed to outperform
                 smaller behavioral models.
+                """
+            )
+
+        with finding_col4:
+            st.info(
+                """
+                **Removing symptom-scale features reduced performance only slightly**
+                
+                Non-symptom behavioral characteristics provide valuable information
+                for predicting mental health severity.
                 """
             )
 
@@ -1491,6 +1503,11 @@ with st.expander("What do the targets and model types mean?"):
       Uses only questionnaires assigned to the same symptom category as
       the prediction target. For example, a depression-category model uses
       depression-related questionnaires to predict QIDS.
+      
+    - **Non-Symptom Behavioral:**
+      Uses only personality, cognitive, demographic, and lifestyle variables. 
+      Symptom questionnaires are excluded to reduce target leakage and better 
+      evaluate independent predictors.
 
     - **Imaging Only:**  
       Uses features extracted from resting-state fMRI data, including
@@ -1506,6 +1523,9 @@ with st.expander("What do the targets and model types mean?"):
     - **Multimodal Category:**  
       Combines imaging features with behavioral features from the target's
       symptom category.
+      
+    - **Multimodal Non-Symptom:**
+      Combines imaging features with non-symptom behavioral feature set.
     """)
 
 # =====================================================
@@ -1519,15 +1539,19 @@ with findings_tab:
 
     st.markdown(
         """
-        - **Behavioral questionnaire data consistently produced the strongest
-          predictions** across depression, anxiety, stress, and anhedonia.
-        - **Imaging-only models had limited predictive performance**, with
-          R² values often near zero or negative.
-        - **Multimodal models generally did not outperform behavioral-only
-          models**, suggesting that the extracted imaging features added
-          limited predictive information.
-        - Anxiety was the most accurately predicted target, while anhedonia
-          was the most difficult and least stable target to predict.
+        - **Behavioral-only models consistently performed the best** This 
+          indicates that behavioral and clinical information was more informative 
+          than the imaging features used in this project.
+        - **State anxiety (STAI) was the easiest symptom to predict.** Cross-validation R²: 0.726
+          Test R²: 0.719 This suggests that behavioral measures were highly effective at predicting 
+          state anxiety severity.
+        - **Anhedonia (SHAPS) was the most difficult symptom to predict.** Although the model 
+          performed reasonably during cross-validation, it did not generalize well to the 
+          independent test set, indicating that predicting anhedonia was much more challenging 
+          than the other symptom domains.
+        - **Removing symptom-scale features did not eliminate predictive performance.** The 
+          behavioral models experienced only a small decrease in R² (approximately 0.10) 
+          while still outperforming imaging-only models.
         """
     )
 
@@ -1540,8 +1564,8 @@ with findings_tab:
         - Extracted global, graph-based, and regional imaging features.
         - Compared behavioral-only, imaging-only, and multimodal Random Forest
           regression models.
-        - Evaluated broad, relevant, and symptom-category-specific behavioral
-          feature sets.
+        - Evaluated broad, relevant, symptom-category-specific, and non-symptom
+          behavioral feature sets.
         - Created an interactive application for reviewing and comparing the
           model results.
         """

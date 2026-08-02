@@ -1,4 +1,6 @@
 """Summarize modality performance and save feature importance outputs."""
+import matplotlib
+matplotlib.use("Agg")
 import joblib
 import pandas as pd
 import matplotlib.pyplot as plt

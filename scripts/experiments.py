@@ -1,8 +1,8 @@
-"""Define the 28 modality/scope experiments and cross-category combinations."""
+"""Define the 36 modality/scope experiments and cross-category combinations."""
 from itertools import combinations
 from config import (
     TARGETS, CATEGORY_FILES, RELEVANT_CATEGORIES, ALL_BEHAVIOR_FILES,
-    BEHAVIOR_SCOPES,
+    BEHAVIOR_SCOPES, NON_SYMPTOM_FILES
 )
 
 
@@ -27,6 +27,8 @@ def files_for_scope(target_key, scope):
         files = files_for_categories(RELEVANT_CATEGORIES[target_key])
     elif scope == 'category':
         files = files_for_categories([target_category])
+    elif scope == 'non-symptom':
+        files = NON_SYMPTOM_FILES
     else:
         raise ValueError(f'Unknown behavior scope: {scope}')
 
@@ -35,7 +37,7 @@ def files_for_scope(target_key, scope):
 
 
 def build_core_experiments():
-    """Four imaging models + 12 behavioral + 12 multimodal = 28 models."""
+    """Four imaging models + 16 behavioral + 16 multimodal = 36 models."""
     experiments = []
 
     for target_key, target in TARGETS.items():

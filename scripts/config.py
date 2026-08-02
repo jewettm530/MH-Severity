@@ -2,7 +2,6 @@
 
 from pathlib import Path
 import os
-
 from dotenv import load_dotenv
 
 
@@ -18,7 +17,7 @@ load_dotenv(PROJECT_ROOT / '.env')
 # Dataset location comes from each teammate's local .env file. Scripts that
 # only inspect generated outputs can still run without a .env; raw-data scripts
 # will then look for the generic project-local data/ directory.
-DATA_DIR = Path(os.getenv('TCP_DATA_DIR', PROJECT_ROOT / 'data')).expanduser().resolve()
+DATA_DIR = Path(os.getenv('TCP_DATA_DIR', PROJECT_ROOT / 'Dataset/ds005237')).expanduser().resolve()
 
 PHENOTYPE_DIR = DATA_DIR / 'phenotype'
 FMRI_DIR = DATA_DIR / 'fMRI_timeseries_clean_denoised_GSR_parcellated'
@@ -146,5 +145,11 @@ ALL_BEHAVIOR_FILES = [
     'subuqp201.csv', 'tci01.csv', 'teps01.csv', 'ymrs01.csv',
 ]
 
-BEHAVIOR_SCOPES = ['all', 'relevant', 'category']
+SYMPTOM_FILES = ['madrs01.csv','dass01.csv','masq01.csv','rrs01.csv','poms01.csv',
+                 'qids01.csv','anxsi01.csv','pdss01.csv','stai01.csv','shaps01.csv',
+                 'teps01.csv', 'pss01.csv','panss01.csv','ymrs01.csv','cgi01.csv']
+
+NON_SYMPTOM_FILES = [f for f in ALL_BEHAVIOR_FILES if f not in SYMPTOM_FILES]
+
+BEHAVIOR_SCOPES = ['all', 'relevant', 'category', 'non-symptom']
 INPUT_TYPES = ['imaging_only', 'behavioral_only', 'multimodal']
