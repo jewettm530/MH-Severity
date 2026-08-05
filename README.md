@@ -16,12 +16,14 @@ For each target, the pipeline compares seven feature configurations:
 1. Behavioral — all eligible scales
 2. Behavioral — clinically relevant categories
 3. Behavioral — target category
-4. Imaging only
-5. Multimodal — all behavioral plus imaging
-6. Multimodal — relevant behavioral plus imaging
-7. Multimodal — category behavioral plus imaging
+4. Behavioral - non-sympton category
+5. Imaging only
+6. Multimodal — all behavioral plus imaging
+7. Multimodal — relevant behavioral plus imaging
+8. Multimodal — category behavioral plus imaging
+9. Multimodal - non-symptom behavioral plus imaging
 
-This produces **28 core models**.
+This produces **36 core models**.
 
 ## Data configuration
 
@@ -132,7 +134,7 @@ outputs/
 ├── imaging_features.csv                global, graph, and parcel features
 ├── experiment_datasets/                matched model-ready datasets
 ├── cross_category_datasets/            symptom-domain experiments
-├── validation/                          automated quality-control reports
+├── validation/                         automated quality-control reports
 └── results/
     ├── model_metrics_comparison.csv
     ├── model_metrics_comparison_sorted.csv
@@ -156,7 +158,7 @@ outputs/
 
 ## Current interpretation
 
-The current results show that behavioral questionnaires provide the strongest predictions. Imaging-only models perform near or below an R² of zero, and adding the current imaging representation generally does not improve behavioral models. Anxiety and depression are more predictable than anhedonia.
+The current results show that behavioral questionnaires provide the strongest predictions. Imaging-only models perform near or below an R² of zero, and adding the current imaging representation generally does not improve behavioral models. Anxiety and depression are more predictable than anhedonia. Removing symptom-scale features did not eliminate predictive performance.
 
 These results do **not** establish that resting-state fMRI contains no symptom-related information. They show that this sample, feature representation, and modeling approach did not extract additional out-of-sample value beyond behavioral measures.
 
