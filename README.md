@@ -2,6 +2,8 @@
 
 This project uses the **Transdiagnostic Connectome Project (OpenNeuro ds005237)** to predict continuous symptom-severity scores with Random Forest regression.
 
+<iframe src="https://docs.google.com/presentation/d/e/2PACX-1vStsVKZ9a-6K3YQ8fZ2oH6FXwrd8DyDdTpK3vocFOxWmgKOYy9oQ8LVnHp_O4S3Du84do2p5psvmmjr/pubembed?start=false&loop=false&delayms=3000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+
 ## Prediction targets
 
 - **QIDS:** depression severity
