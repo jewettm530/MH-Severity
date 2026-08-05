@@ -15,8 +15,14 @@ Dataset/
 datasets/
 data/
 
-# Outputs
-outputs/
+# Outputs — ignore the contents (not the dir itself, so negations below can work)
+outputs/*
+
+# ...but re-include the results folder, then keep only the CSVs the deployed app reads
+!outputs/results/
+outputs/results/*
+!outputs/results/model_metrics_comparison.csv
+!outputs/results/best_model_by_target.csv
 
 # Models
 models/
