@@ -11,7 +11,7 @@ This project uses the **Transdiagnostic Connectome Project (OpenNeuro ds005237)*
 
 ## Experiments
 
-For each target, the pipeline compares seven feature configurations:
+For each target, the pipeline compares nine feature configurations:
 
 1. Behavioral — all eligible scales
 2. Behavioral — clinically relevant categories
