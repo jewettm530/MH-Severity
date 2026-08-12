@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" role="img" aria-labelledby="title desc">
+<title id="title">Mental health symptom severity machine learning pipeline</title>
+<desc id="desc">Behavioral questionnaires and resting-state fMRI features are processed into matched experiment datasets, trained with Random Forest regression, evaluated with repeated cross-validation and a held-out test set, and compared across prediction targets.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+    <stop offset="0" stop-color="#f7f9ff"/>
+    <stop offset="1" stop-color="#eef9f8"/>
+  </linearGradient>
+  <linearGradient id="beh" x1="0" x2="1">
+    <stop offset="0" stop-color="#5268e8"/>
+    <stop offset="1" stop-color="#6c7cf0"/>
+  </linearGradient>
+  <linearGradient id="img" x1="0" x2="1">
+    <stop offset="0" stop-color="#148d91"/>
+    <stop offset="1" stop-color="#20a8a7"/>
+  </linearGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#17213f" flood-opacity=".10"/>
+  </filter>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+    <path d="M0,0 L0,6 L9,3 z" fill="#7b859e"/>
+  </marker>
+</defs>
+<rect width="1200" height="620" rx="28" fill="url(#bg)"/>
+<g font-family="Inter,Segoe UI,Arial,sans-serif">
+  <text x="600" y="62" text-anchor="middle" font-size="28" font-weight="700" fill="#17213f">End-to-end modeling workflow</text>
+  <text x="600" y="94" text-anchor="middle" font-size="16" fill="#667085">Two data modalities → matched experiments → Random Forest → rigorous evaluation</text>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="150" width="285" height="122" rx="20" fill="url(#beh)"/>
+    <text x="212" y="193" text-anchor="middle" font-size="22" font-weight="700" fill="white">Behavioral data</text>
+    <text x="212" y="224" text-anchor="middle" font-size="15" fill="#eef1ff">Questionnaire totals &amp; summaries</text>
+    <text x="212" y="248" text-anchor="middle" font-size="15" fill="#eef1ff">All • relevant • category • non-symptom</text>
+
+    <rect x="845" y="150" width="285" height="122" rx="20" fill="url(#img)"/>
+    <text x="987" y="193" text-anchor="middle" font-size="22" font-weight="700" fill="white">Resting-state fMRI</text>
+    <text x="987" y="224" text-anchor="middle" font-size="15" fill="#e9fffe">Global • graph • connectivity</text>
+    <text x="987" y="248" text-anchor="middle" font-size="15" fill="#e9fffe">488 regional parcel strengths</text>
+
+    <rect x="447" y="177" width="306" height="104" rx="20" fill="#ffffff"/>
+    <text x="600" y="216" text-anchor="middle" font-size="20" font-weight="700" fill="#17213f">Matched experiment datasets</text>
+    <text x="600" y="245" text-anchor="middle" font-size="15" fill="#667085">Same participant cohort within each target</text>
+
+    <rect x="447" y="345" width="306" height="105" rx="20" fill="#ffffff"/>
+    <text x="600" y="386" text-anchor="middle" font-size="21" font-weight="700" fill="#17213f">Random Forest Regression</text>
+    <text x="600" y="416" text-anchor="middle" font-size="15" fill="#667085">Behavioral • imaging • multimodal</text>
+
+    <rect x="70" y="500" width="300" height="82" rx="18" fill="#ffffff"/>
+    <text x="220" y="533" text-anchor="middle" font-size="18" font-weight="700" fill="#17213f">Repeated cross-validation</text>
+    <text x="220" y="559" text-anchor="middle" font-size="14" fill="#667085">5 folds × 3 repeats</text>
+
+    <rect x="450" y="500" width="300" height="82" rx="18" fill="#ffffff"/>
+    <text x="600" y="533" text-anchor="middle" font-size="18" font-weight="700" fill="#17213f">Held-out evaluation</text>
+    <text x="600" y="559" text-anchor="middle" font-size="14" fill="#667085">MAE • RMSE • R²</text>
+
+    <rect x="830" y="500" width="300" height="82" rx="18" fill="#ffffff"/>
+    <text x="980" y="533" text-anchor="middle" font-size="18" font-weight="700" fill="#17213f">Cross-category analysis</text>
+    <text x="980" y="559" text-anchor="middle" font-size="14" fill="#667085">How symptom domains add predictive value</text>
+  </g>
+
+  <path d="M355 211 H425" stroke="#7b859e" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M845 211 H775" stroke="#7b859e" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M600 281 V325" stroke="#7b859e" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M600 450 V480" stroke="#7b859e" stroke-width="3"/>
+  <path d="M600 480 H220 V495" stroke="#7b859e" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M600 480 V495" stroke="#7b859e" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M600 480 H980 V495" stroke="#7b859e" stroke-width="3" marker-end="url(#arrow)"/>
+</g>
+</svg>

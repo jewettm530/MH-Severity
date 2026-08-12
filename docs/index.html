@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Predicting Mental Health Symptom Severity | Behavioral + fMRI</title>
+  <meta name="description" content="A Random Forest machine-learning project comparing behavioral questionnaires, resting-state fMRI features, and multimodal data for predicting depression, anxiety, stress, and anhedonia severity.">
+  <meta name="theme-color" content="#0d1630">
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <link rel="canonical" href="https://jewettm530.github.io/MH_Severity_Behavioral_and_Scans/">
+  <meta property="og:title" content="Predicting Mental Health Symptom Severity">
+  <meta property="og:description" content="Behavioral, neuroimaging, and multimodal Random Forest models across four mental-health symptom domains.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jewettm530.github.io/MH_Severity_Behavioral_and_Scans/">
+  <meta property="og:image" content="https://jewettm530.github.io/MH_Severity_Behavioral_and_Scans/images/social-preview.png">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="#top" aria-label="Project home">
+        <img src="images/favicon.svg" alt="" width="34" height="34">
+        <span>MH Severity</span>
+      </a>
+      <button class="menu-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      <nav id="site-nav" class="site-nav" aria-label="Primary navigation">
+        <a href="#overview">Overview</a>
+        <a href="#method">Method</a>
+        <a href="#results">Results</a>
+        <a href="#cross-category">Cross-category</a>
+        <a href="#impact">Impact</a>
+        <a href="#artifacts">Artifacts</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow">Random Forest Regression · Behavioral + Neuroimaging Data</p>
+          <h1>Predicting Mental Health Symptom Severity</h1>
+          <p class="hero-lede">
+            We compared behavioral questionnaires, resting-state fMRI features, and multimodal data to predict continuous
+            depression, anxiety, stress, and anhedonia severity using the Transdiagnostic Connectome Project.
+          </p>
+          <div class="button-row">
+            <a class="button primary" href="https://github.com/jewettm530/MH_Severity_Behavioral_and_Scans">View GitHub repository</a>
+            <a class="button secondary" href="https://github.com/jewettm530/MH_Severity_Behavioral_and_Scans/blob/main/Presentations/AI_MH_Severity_Final_Presentation.pdf">Final presentation</a>
+          </div>
+        </div>
+        <div class="hero-panel" aria-label="Project summary">
+          <div class="hero-panel-label">Research question</div>
+          <p>Which data source provides the strongest out-of-sample prediction of mental-health symptom severity?</p>
+          <div class="mini-result">
+            <span class="mini-result-kicker">Main finding</span>
+            <strong>Behavioral features were consistently the strongest predictors.</strong>
+          </div>
+        </div>
+      </div>
+      <div class="stats-grid" aria-label="Project statistics">
+        <div class="stat"><strong>241</strong><span>participants</span></div>
+        <div class="stat"><strong>4</strong><span>prediction targets</span></div>
+        <div class="stat"><strong>36</strong><span>core model configurations</span></div>
+        <div class="stat"><strong>15</strong><span>CV evaluations per model</span></div>
+      </div>
+    </section>
+
+    <section class="section" id="overview">
+      <div class="section-heading">
+        <p class="eyebrow">Project overview</p>
+        <h2>From symptom questionnaires and brain connectivity to continuous severity prediction</h2>
+        <p>
+          The project focuses on symptom severity rather than diagnosis, allowing the models to capture variation within and
+          across traditional diagnostic groups.
+        </p>
+      </div>
+
+      <div class="target-grid">
+        <article class="target-card">
+          <span class="target-code">QIDS</span>
+          <h3>Depression</h3>
+          <p>Quick Inventory of Depressive Symptomatology total score.</p>
+        </article>
+        <article class="target-card">
+          <span class="target-code">STAI-State</span>
+          <h3>Anxiety</h3>
+          <p>Current state-anxiety severity from the State-Trait Anxiety Inventory.</p>
+        </article>
+        <article class="target-card">
+          <span class="target-code">PSS</span>
+          <h3>Perceived stress</h3>
+          <p>Self-reported perceived stress severity.</p>
+        </article>
+        <article class="target-card">
+          <span class="target-code">SHAPS</span>
+          <h3>Anhedonia</h3>
+          <p>Reduced capacity to experience pleasure or enjoyment.</p>
+        </article>
+      </div>
+
+      <div class="three-col">
+        <article class="info-card">
+          <div class="icon-badge">B</div>
+          <h3>Behavioral</h3>
+          <p>Questionnaire totals and summary features, tested as all, relevant, target-category, and non-symptom scopes.</p>
+        </article>
+        <article class="info-card">
+          <div class="icon-badge teal">I</div>
+          <h3>Imaging</h3>
+          <p>Resting-state fMRI summaries, graph organization, connectivity summaries, and 488 parcel-strength features.</p>
+        </article>
+        <article class="info-card">
+          <div class="icon-badge mixed">M</div>
+          <h3>Multimodal</h3>
+          <p>Behavioral feature scopes combined with imaging features to test whether fMRI adds predictive value.</p>
+        </article>
+      </div>
+
+      <div class="cohort-card">
+        <div>
+          <p class="eyebrow">Dataset</p>
+          <h3>Transdiagnostic Connectome Project</h3>
+          <p>
+            An open, richly phenotyped dataset designed to study brain–behavior relationships across psychiatric and general-population participants.
+          </p>
+          <a class="text-link" href="https://openneuro.org/datasets/ds005237/versions/1.1.3">View dataset on OpenNeuro →</a>
+        </div>
+        <div class="cohort-visuals">
+          <button class="image-button" data-lightbox="images/participant-groups.png" aria-label="Open participant group distribution">
+            <img src="images/participant-groups.png" alt="Bar chart showing participant counts for Patient and GenPop groups." loading="lazy">
+          </button>
+          <button class="image-button" data-lightbox="images/age-distribution.png" aria-label="Open participant age distribution">
+            <img src="images/age-distribution.png" alt="Histogram of participant ages from late adolescence through older adulthood." loading="lazy">
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="method">
+      <div class="section-heading">
+        <p class="eyebrow">Method</p>
+        <h2>A reproducible comparison across modalities</h2>
+        <p>
+          Every target uses a matched participant cohort across modalities. Feature reduction for regional imaging data is fitted inside each
+          training fold to reduce leakage risk.
+        </p>
+      </div>
+
+      <div class="pipeline-card">
+        <img src="images/pipeline.svg" alt="Diagram of the behavioral and fMRI machine learning pipeline.">
+      </div>
+
+      <div class="method-points">
+        <div><strong>Fair comparison</strong><span>Same cohort and deterministic 80/20 split within each outcome.</span></div>
+        <div><strong>Repeated validation</strong><span>5 stratified folds × 3 repeats on the training set.</span></div>
+        <div><strong>Imaging reduction</strong><span>SelectKBest plus PCA applied inside training/CV folds.</span></div>
+        <div><strong>Final metrics</strong><span>MAE, RMSE, R², variability, sample size, and feature counts.</span></div>
+      </div>
+    </section>
+
+    <section class="section" id="results">
+      <div class="section-heading">
+        <p class="eyebrow">Key results</p>
+        <h2>Behavioral data carried most of the predictive signal</h2>
+        <p>
+          The strongest behavioral models outperformed imaging-only models for all four outcomes. Adding the current fMRI representation generally
+          did not improve on the strongest behavioral-only model.
+        </p>
+      </div>
+
+      <div class="finding-strip">
+        <div><span>01</span><strong>Behavioral models led</strong><p>Questionnaire features produced the strongest repeated-CV performance.</p></div>
+        <div><span>02</span><strong>Imaging was weak alone</strong><p>Imaging-only R² values were near or below zero.</p></div>
+        <div><span>03</span><strong>Multimodal ≠ automatically better</strong><p>More features did not translate into better prediction.</p></div>
+        <div><span>04</span><strong>Anhedonia was hardest</strong><p>SHAPS showed the weakest and least stable generalization.</p></div>
+      </div>
+
+      <div class="figure-grid two">
+        <figure class="figure-card">
+          <button class="image-button" data-lightbox="images/model-performance-by-modality.png" aria-label="Open predictive performance by modality chart">
+            <img src="images/model-performance-by-modality.png" alt="Grouped bar chart comparing behavioral, imaging-only, and multimodal repeated cross-validation R squared across depression, anxiety, stress, and anhedonia." loading="lazy">
+          </button>
+          <figcaption>
+            <strong>Predictive performance by data modality.</strong>
+            Behavioral models consistently performed best, while imaging-only models were near or below R² = 0.
+          </figcaption>
+        </figure>
+
+        <figure class="figure-card">
+          <button class="image-button" data-lightbox="images/spearman-correlation-matrix.png" aria-label="Open Spearman feature-to-outcome correlation matrix">
+            <img src="images/spearman-correlation-matrix.png" alt="Heatmap of the strongest Spearman correlations between behavioral features and each symptom outcome." loading="lazy">
+          </button>
+          <figcaption>
+            <strong>Feature-to-outcome validation.</strong>
+            No retained behavioral feature exceeded the project review threshold of |ρ| ≥ 0.80 with its target.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="validation-callout">
+        <div class="validation-number">0</div>
+        <div>
+          <strong>features flagged at |Spearman ρ| ≥ 0.80</strong>
+          <p>
+            This does not prove leakage is impossible, but it supports that no single retained behavioral predictor was nearly identical to its outcome.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="cross-category">
+      <div class="section-heading">
+        <p class="eyebrow">Cross-category analysis</p>
+        <h2>How do cross-category symptom domains influence prediction?</h2>
+        <p>
+          Each outcome begins with its own symptom domain as a baseline. The charts show how repeated cross-validation R² changes when related
+          domains are added.
+        </p>
+      </div>
+
+      <div class="figure-grid four">
+        <figure class="figure-card compact">
+          <button class="image-button" data-lightbox="images/qids-cross-category.png" aria-label="Open QIDS cross-category results">
+            <img src="images/qids-cross-category.png" alt="Cross-category contribution chart for depression prediction." loading="lazy">
+          </button>
+          <figcaption><strong>Depression (QIDS)</strong></figcaption>
+        </figure>
+        <figure class="figure-card compact">
+          <button class="image-button" data-lightbox="images/stai-cross-category.png" aria-label="Open STAI cross-category results">
+            <img src="images/stai-cross-category.png" alt="Cross-category contribution chart for anxiety prediction." loading="lazy">
+          </button>
+          <figcaption><strong>Anxiety (STAI-State)</strong></figcaption>
+        </figure>
+        <figure class="figure-card compact">
+          <button class="image-button" data-lightbox="images/pss-cross-category.png" aria-label="Open PSS cross-category results">
+            <img src="images/pss-cross-category.png" alt="Cross-category contribution chart for perceived stress prediction." loading="lazy">
+          </button>
+          <figcaption><strong>Stress (PSS)</strong></figcaption>
+        </figure>
+        <figure class="figure-card compact">
+          <button class="image-button" data-lightbox="images/shaps-cross-category.png" aria-label="Open SHAPS cross-category results">
+            <img src="images/shaps-cross-category.png" alt="Cross-category contribution chart for anhedonia prediction." loading="lazy">
+          </button>
+          <figcaption><strong>Anhedonia (SHAPS)</strong></figcaption>
+        </figure>
+      </div>
+
+      <div class="takeaway-box">
+        <span class="takeaway-label">Takeaway</span>
+        <p>Related symptom domains sometimes improved prediction, but the size and direction of that contribution differed substantially by outcome.</p>
+      </div>
+    </section>
+
+    <section class="section" id="impact">
+      <div class="section-heading">
+        <p class="eyebrow">Benefits &amp; challenges</p>
+        <h2>Useful for research—careful in interpretation</h2>
+      </div>
+
+      <div class="impact-grid">
+        <article class="impact-card benefit">
+          <h3>Benefits</h3>
+          <ul>
+            <li><strong>Improved research:</strong> efficiently compares behavioral and neuroimaging signals.</li>
+            <li><strong>Cross-domain insight:</strong> quantifies how symptom domains contribute to one another.</li>
+            <li><strong>Decision support potential:</strong> may eventually complement professional assessment and monitoring.</li>
+            <li><strong>Transparent exploration:</strong> an interactive Streamlit dashboard makes results accessible.</li>
+          </ul>
+        </article>
+
+        <article class="impact-card challenge">
+          <h3>Challenges</h3>
+          <ul>
+            <li><strong>Not diagnostic:</strong> predictions must not replace licensed clinical evaluation.</li>
+            <li><strong>Generalizability:</strong> the sample comes from one research dataset.</li>
+            <li><strong>Imaging limitations:</strong> the current fMRI representation added little out-of-sample value.</li>
+            <li><strong>Privacy &amp; ethics:</strong> mental-health and neuroimaging data require careful handling.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="responsible-use">
+        <strong>Responsible use</strong>
+        <p>This project is for research and education. Its predictions are not medical diagnoses and should not be used to make clinical decisions about an individual.</p>
+      </div>
+    </section>
+
+    <section class="section alt" id="artifacts">
+      <div class="section-heading">
+        <p class="eyebrow">Project artifacts</p>
+        <h2>Explore the code, dashboard, and presentations</h2>
+      </div>
+
+      <div class="artifact-grid">
+        <a class="artifact-card" href="https://github.com/jewettm530/MH_Severity_Behavioral_and_Scans">
+          <span class="artifact-type">Code</span>
+          <strong>GitHub repository</strong>
+          <p>Pipeline scripts, outputs, validation reports, and documentation.</p>
+          <span class="text-link">Open repository →</span>
+        </a>
+
+        <!-- Replace this source-code link with the deployed Streamlit URL if/when one is available. -->
+        <a class="artifact-card" href="https://github.com/jewettm530/MH_Severity_Behavioral_and_Scans/blob/main/interface.py">
+          <span class="artifact-type">App</span>
+          <strong>Streamlit dashboard</strong>
+          <p>Interactive interface for target/model comparisons, metrics, and key findings.</p>
+          <span class="text-link">View dashboard source →</span>
+        </a>
+
+        <a class="artifact-card" href="https://github.com/jewettm530/MH_Severity_Behavioral_and_Scans/blob/main/Presentations/AI_MH_Severity_Final_Presentation.pdf">
+          <span class="artifact-type">Presentation</span>
+          <strong>Final presentation</strong>
+          <p>The complete project story, results, impact, and next steps.</p>
+          <span class="text-link">View PDF →</span>
+        </a>
+
+        <a class="artifact-card" href="https://github.com/jewettm530/MH_Severity_Behavioral_and_Scans/blob/main/Presentations/AI_MH_Severity_Proposal_Presentation.pdf">
+          <span class="artifact-type">Presentation</span>
+          <strong>Project proposal</strong>
+          <p>The original research question, modeling plan, and dataset rationale.</p>
+          <span class="text-link">View PDF →</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section team-section">
+      <div class="section-heading">
+        <p class="eyebrow">Team</p>
+        <h2>Project contributors</h2>
+      </div>
+      <div class="team-list" aria-label="Project team members">
+        <span>Shreya Sureshbabu Banumathi</span>
+        <span>Ayomide Olushola Arulogun</span>
+        <span>Albin Rahman</span>
+        <span>Abdelrahman Mohamed</span>
+        <span>Madeline Jewett</span>
+        <span>Soham Sinha</span>
+      </div>
+    </section>
+
+    <section class="citation-section">
+      <div>
+        <p class="eyebrow">Dataset citation</p>
+        <p>
+          Chopra, S. et al. (2025). <em>The Transdiagnostic Connectome Project: an open dataset for studying brain-behavior relationships in psychiatry.</em>
+          Scientific Data, 12, 923.
+        </p>
+      </div>
+      <a class="text-link light" href="https://doi.org/10.1038/s41597-025-04895-z">Read the dataset paper →</a>
+    </section>
+  </main>
+
+  <footer>
+    <p>Built with Python, scikit-learn, Streamlit, and the Transdiagnostic Connectome Project.</p>
+    <p>© <span id="year"></span> MH Severity project team.</p>
+  </footer>
+
+  <dialog class="lightbox" id="lightbox">
+    <button class="lightbox-close" aria-label="Close image">×</button>
+    <img src="" alt="">
+  </dialog>
+
+  <script src="site.js"></script>
+</body>
+</html>
