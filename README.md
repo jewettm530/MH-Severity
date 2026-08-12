@@ -4,7 +4,7 @@ This project uses the **Transdiagnostic Connectome Project (OpenNeuro ds005237)*
 
 ## Project links
 
-- **Project website:** https://jewettm530.github.io/MH_Severity_Behavioral_and_Scans/
+- **Project website:** [https://jewettm530.github.io/MH_Severity_Behavioral_and_Scans/](https://jewettm530.github.io/MH-Severity/)
 - **Final presentation:** [PDF](Presentations/AI_MH_Severity_Final_Presentation.pdf)
 - **Project proposal:** [PDF](Presentations/AI_MH_Severity_Proposal_Presentation.pdf)
 - **Streamlit dashboard source:** [interface.py](interface.py)
