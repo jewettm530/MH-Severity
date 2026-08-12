@@ -165,12 +165,12 @@ outputs/
 
 `scripts/08_validate_outputs.py` checks:
 
-- signed repeated-nine values;
-- outcome validity and missing targets;
-- duplicate participant IDs;
-- Spearman feature-to-outcome correlations;
-- features with `|ρ| ≥ 0.80`;
-- imaging feature count, missingness, and constant columns.
+- Signed repeated-nine values
+- Outcome validity and missing targets
+- Duplicate participant IDs
+- Spearman feature-to-outcome correlations
+- Features with `|ρ| ≥ 0.80`
+- Imaging feature count, missingness, and constant columns
 
 ## Current interpretation
 
@@ -182,11 +182,11 @@ These findings **do not establish that resting-state fMRI contains no symptom-re
 
 ## Limitations
 
-- sample size is limited relative to imaging dimensionality;
-- motion and scanner-site effects warrant explicit confound analysis or harmonization;
-- parcel-strength features do not preserve individual connectivity edges;
-- the core comparison uses Random Forest regression;
-- external validation has not yet been performed.
+- Sample size is limited relative to imaging dimensionality
+- Motion and scanner-site effects warrant explicit confound analysis or harmonization
+- Parcel-strength features do not preserve individual connectivity edges
+- The core comparison uses Random Forest regression
+- External validation has not yet been performed
 
 ## Responsible use
 
